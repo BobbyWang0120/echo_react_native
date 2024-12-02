@@ -23,9 +23,11 @@ export default function HomePage() {
 
   return (
     <View style={styles.container}>
-      <StatusBar style="light" />
-      <BlurView intensity={70} tint="dark" style={styles.contentContainer}>
-        <Text style={styles.title}>音频转录</Text>
+      <StatusBar style="dark" />
+      <BlurView intensity={50} tint="light" style={styles.contentContainer}>
+        <View style={styles.header}>
+          <Text style={styles.title}>音频转录</Text>
+        </View>
         
         <TouchableOpacity 
           style={styles.uploadButton} 
@@ -58,62 +60,91 @@ export default function HomePage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: '#f5f5f5',
   },
   contentContainer: {
     flex: 1,
     padding: 20,
+  },
+  header: {
     paddingTop: 60,
+    paddingBottom: 20,
+    alignItems: 'center',
   },
   title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 40,
+    fontSize: 28,
+    fontWeight: '600',
+    color: '#333',
     textAlign: 'center',
   },
   uploadButton: {
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: 15,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    borderRadius: 16,
     padding: 20,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
+    borderColor: 'rgba(0, 0, 0, 0.1)',
     marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   uploadButtonText: {
-    color: '#fff',
+    color: '#333',
     fontSize: 18,
     fontWeight: '600',
   },
   uploadSubText: {
-    color: 'rgba(255, 255, 255, 0.6)',
+    color: '#666',
     fontSize: 14,
     marginTop: 8,
   },
   transcribeButton: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
+    backgroundColor: '#007AFF',
+    borderRadius: 16,
     padding: 16,
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   buttonDisabled: {
-    opacity: 0.5,
+    opacity: 0.6,
   },
   transcribeButtonText: {
-    color: '#000',
+    color: '#fff',
     fontSize: 16,
     fontWeight: '600',
   },
   resultContainer: {
     marginTop: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: 15,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    borderRadius: 16,
     padding: 15,
     maxHeight: 300,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 0, 0, 0.1)',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   resultText: {
-    color: '#fff',
+    color: '#333',
     fontSize: 16,
     lineHeight: 24,
   },
