@@ -1,74 +1,151 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import { BlurView } from 'expo-blur';
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+export default function HomePage() {
+  const [transcription, setTranscription] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(false);
 
-export default function HomeScreen() {
+  const handleAudioUpload = () => {
+    // TODO: 实现音频上传功能
+    console.log('Upload audio');
+  };
+
+  const handleTranscribe = () => {
+    // TODO: 实现转录功能
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+      setTranscription('这里将显示转录结果...');
+    }, 2000);
+  };
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <View style={styles.container}>
+      <StatusBar style="dark" />
+      <BlurView intensity={50} tint="light" style={styles.contentContainer}>
+        <View style={styles.header}>
+          <Text style={styles.title}>音频转录</Text>
+        </View>
+        
+        <TouchableOpacity 
+          style={styles.uploadButton} 
+          onPress={handleAudioUpload}
+        >
+          <Text style={styles.uploadButtonText}>选择音频文件</Text>
+          <Text style={styles.uploadSubText}>支持 mp3, wav, m4a 格式</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={[styles.transcribeButton, isLoading && styles.buttonDisabled]}
+          onPress={handleTranscribe}
+          disabled={isLoading}
+        >
+          <Text style={styles.transcribeButtonText}>
+            {isLoading ? '转录中...' : '开始转录'}
+          </Text>
+        </TouchableOpacity>
+
+        {transcription ? (
+          <ScrollView style={styles.resultContainer}>
+            <Text style={styles.resultText}>{transcription}</Text>
+          </ScrollView>
+        ) : null}
+      </BlurView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
+  container: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+  },
+  contentContainer: {
+    flex: 1,
+    padding: 20,
+  },
+  header: {
+    paddingTop: 60,
+    paddingBottom: 20,
     alignItems: 'center',
-    gap: 8,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  title: {
+    fontSize: 28,
+    fontWeight: '600',
+    color: '#000000',
+    textAlign: 'center',
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  uploadButton: {
+    backgroundColor: 'rgba(0, 0, 0, 0.03)',
+    borderRadius: 16,
+    padding: 20,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(0, 0, 0, 0.1)',
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  uploadButtonText: {
+    color: '#000000',
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  uploadSubText: {
+    color: 'rgba(0, 0, 0, 0.5)',
+    fontSize: 14,
+    marginTop: 8,
+  },
+  transcribeButton: {
+    backgroundColor: '#000000',
+    borderRadius: 16,
+    padding: 16,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  buttonDisabled: {
+    opacity: 0.3,
+  },
+  transcribeButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  resultContainer: {
+    marginTop: 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.03)',
+    borderRadius: 16,
+    padding: 15,
+    maxHeight: 300,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 0, 0, 0.1)',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  resultText: {
+    color: '#000000',
+    fontSize: 16,
+    lineHeight: 24,
   },
 });
