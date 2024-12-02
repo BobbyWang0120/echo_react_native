@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { BlurView } from 'expo-blur';
 import * as DocumentPicker from 'expo-document-picker';
@@ -11,6 +11,8 @@ interface AudioFile {
   size: number;
   mimeType: string;
 }
+
+const MAX_FILE_SIZE = 25 * 1024 * 1024; // 25MB in bytes
 
 export default function HomePage() {
   const [transcription, setTranscription] = useState<string>('');
@@ -34,6 +36,16 @@ export default function HomePage() {
         return;
       }
 
+      // 检查文件大小
+      if (file.size > MAX_FILE_SIZE) {
+        Alert.alert(
+          '文件过大',
+          '请选择小于 25MB 的音频文件',
+          [{ text: '确定', style: 'default' }]
+        );
+        return;
+      }
+
       setAudioFile({
         uri: file.uri,
         name: file.name,
@@ -46,6 +58,11 @@ export default function HomePage() {
       setIsLoading(false);
     } catch (error) {
       console.error('Error picking audio file:', error);
+      Alert.alert(
+        '上传失败',
+        '选择文件时发生错误，请重试',
+        [{ text: '确定', style: 'default' }]
+      );
     }
   };
 
@@ -95,6 +112,7 @@ export default function HomePage() {
             <>
               <Text style={styles.uploadButtonText}>选择音频文件</Text>
               <Text style={styles.uploadSubText}>支持 mp3, wav, m4a 格式</Text>
+              <Text style={styles.uploadSubText}>文件大小不超过 25MB</Text>
             </>
           )}
         </TouchableOpacity>
