@@ -60,7 +60,7 @@ export default function HomePage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#ffffff',
   },
   contentContainer: {
     flex: 1,
@@ -74,11 +74,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: '600',
-    color: '#333',
+    color: '#000000',
     textAlign: 'center',
   },
   uploadButton: {
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    backgroundColor: 'rgba(0, 0, 0, 0.03)',
     borderRadius: 16,
     padding: 20,
     alignItems: 'center',
@@ -90,22 +90,22 @@ const styles = StyleSheet.create({
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.05,
     shadowRadius: 4,
     elevation: 3,
   },
   uploadButtonText: {
-    color: '#333',
+    color: '#000000',
     fontSize: 18,
     fontWeight: '600',
   },
   uploadSubText: {
-    color: '#666',
+    color: 'rgba(0, 0, 0, 0.5)',
     fontSize: 14,
     marginTop: 8,
   },
   transcribeButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#000000',
     borderRadius: 16,
     padding: 16,
     alignItems: 'center',
@@ -119,16 +119,16 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   buttonDisabled: {
-    opacity: 0.6,
+    opacity: 0.3,
   },
   transcribeButtonText: {
-    color: '#fff',
+    color: '#ffffff',
     fontSize: 16,
     fontWeight: '600',
   },
   resultContainer: {
     marginTop: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    backgroundColor: 'rgba(0, 0, 0, 0.03)',
     borderRadius: 16,
     padding: 15,
     maxHeight: 300,
@@ -139,12 +139,12 @@ const styles = StyleSheet.create({
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.05,
     shadowRadius: 4,
     elevation: 3,
   },
   resultText: {
-    color: '#333',
+    color: '#000000',
     fontSize: 16,
     lineHeight: 24,
   },
