@@ -2,18 +2,64 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { BlurView } from 'expo-blur';
+import * as DocumentPicker from 'expo-document-picker';
+import { Ionicons } from '@expo/vector-icons';
+
+interface AudioFile {
+  uri: string;
+  name: string;
+  size: number;
+  mimeType: string;
+}
 
 export default function HomePage() {
   const [transcription, setTranscription] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
+  const [audioFile, setAudioFile] = useState<AudioFile | null>(null);
 
-  const handleAudioUpload = () => {
-    // TODO: 实现音频上传功能
-    console.log('Upload audio');
+  const handleAudioUpload = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: ['audio/mpeg', 'audio/wav', 'audio/x-m4a'],
+        copyToCacheDirectory: true,
+      });
+
+      if (result.canceled) {
+        return;
+      }
+
+      const file = result.assets[0];
+      if (!file.size) {
+        console.warn('File size is undefined');
+        return;
+      }
+
+      setAudioFile({
+        uri: file.uri,
+        name: file.name,
+        size: file.size,
+        mimeType: file.mimeType || '',
+      });
+      
+      // 重置转录状态
+      setTranscription('');
+      setIsLoading(false);
+    } catch (error) {
+      console.error('Error picking audio file:', error);
+    }
+  };
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
   const handleTranscribe = () => {
-    // TODO: 实现转录功能
+    if (!audioFile) return;
+    
     setIsLoading(true);
     setTimeout(() => {
       setIsLoading(false);
@@ -33,14 +79,33 @@ export default function HomePage() {
           style={styles.uploadButton} 
           onPress={handleAudioUpload}
         >
-          <Text style={styles.uploadButtonText}>选择音频文件</Text>
-          <Text style={styles.uploadSubText}>支持 mp3, wav, m4a 格式</Text>
+          {audioFile ? (
+            <View style={styles.fileInfo}>
+              <Ionicons name="document-text-outline" size={24} color="#000000" style={styles.fileIcon} />
+              <Text style={styles.fileName} numberOfLines={1}>{audioFile.name}</Text>
+              <Text style={styles.fileSize}>{formatFileSize(audioFile.size)}</Text>
+              <TouchableOpacity 
+                style={styles.removeButton}
+                onPress={() => setAudioFile(null)}
+              >
+                <Ionicons name="close-circle" size={20} color="rgba(0, 0, 0, 0.5)" />
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <>
+              <Text style={styles.uploadButtonText}>选择音频文件</Text>
+              <Text style={styles.uploadSubText}>支持 mp3, wav, m4a 格式</Text>
+            </>
+          )}
         </TouchableOpacity>
 
         <TouchableOpacity 
-          style={[styles.transcribeButton, isLoading && styles.buttonDisabled]}
+          style={[
+            styles.transcribeButton, 
+            (!audioFile || isLoading) && styles.buttonDisabled
+          ]}
           onPress={handleTranscribe}
-          disabled={isLoading}
+          disabled={!audioFile || isLoading}
         >
           <Text style={styles.transcribeButtonText}>
             {isLoading ? '转录中...' : '开始转录'}
@@ -103,6 +168,30 @@ const styles = StyleSheet.create({
     color: 'rgba(0, 0, 0, 0.5)',
     fontSize: 14,
     marginTop: 8,
+  },
+  fileInfo: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+  },
+  fileIcon: {
+    marginRight: 12,
+  },
+  fileName: {
+    flex: 1,
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#000000',
+  },
+  fileSize: {
+    fontSize: 14,
+    color: 'rgba(0, 0, 0, 0.5)',
+    marginLeft: 8,
+    marginRight: 12,
+  },
+  removeButton: {
+    padding: 4,
   },
   transcribeButton: {
     backgroundColor: '#000000',
