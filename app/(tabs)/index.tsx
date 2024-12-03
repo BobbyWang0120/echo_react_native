@@ -4,6 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import { BlurView } from 'expo-blur';
 import * as DocumentPicker from 'expo-document-picker';
 import { Ionicons } from '@expo/vector-icons';
+import { transcribeAudio } from '../../services/openai';
 
 interface AudioFile {
   uri: string;
@@ -74,14 +75,23 @@ export default function HomePage() {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
-  const handleTranscribe = () => {
+  const handleTranscribe = async () => {
     if (!audioFile) return;
     
     setIsLoading(true);
-    setTimeout(() => {
+    try {
+      const result = await transcribeAudio(audioFile.uri);
+      setTranscription(result);
+    } catch (error) {
+      console.error('Transcription error:', error);
+      Alert.alert(
+        '转录失败',
+        '音频转录过程中发生错误，请重试',
+        [{ text: '确定', style: 'default' }]
+      );
+    } finally {
       setIsLoading(false);
-      setTranscription('这里将显示转录结果...');
-    }, 2000);
+    }
   };
 
   return (
@@ -103,7 +113,10 @@ export default function HomePage() {
               <Text style={styles.fileSize}>{formatFileSize(audioFile.size)}</Text>
               <TouchableOpacity 
                 style={styles.removeButton}
-                onPress={() => setAudioFile(null)}
+                onPress={() => {
+                  setAudioFile(null);
+                  setTranscription('');
+                }}
               >
                 <Ionicons name="close-circle" size={20} color="rgba(0, 0, 0, 0.5)" />
               </TouchableOpacity>
