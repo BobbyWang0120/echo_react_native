@@ -98,55 +98,62 @@ export default function HomePage() {
     <View style={styles.container}>
       <StatusBar style="dark" />
       <BlurView intensity={50} tint="light" style={styles.contentContainer}>
-        <View style={styles.header}>
-          <Text style={styles.title}>音频转录</Text>
-        </View>
-        
-        <TouchableOpacity 
-          style={styles.uploadButton} 
-          onPress={handleAudioUpload}
-        >
-          {audioFile ? (
-            <View style={styles.fileInfo}>
-              <Ionicons name="document-text-outline" size={24} color="#000000" style={styles.fileIcon} />
-              <Text style={styles.fileName} numberOfLines={1}>{audioFile.name}</Text>
-              <Text style={styles.fileSize}>{formatFileSize(audioFile.size)}</Text>
-              <TouchableOpacity 
-                style={styles.removeButton}
-                onPress={() => {
-                  setAudioFile(null);
-                  setTranscription('');
-                }}
-              >
-                <Ionicons name="close-circle" size={20} color="rgba(0, 0, 0, 0.5)" />
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <>
-              <Text style={styles.uploadButtonText}>选择音频文件</Text>
-              <Text style={styles.uploadSubText}>支持 mp3, wav, m4a 格式</Text>
-              <Text style={styles.uploadSubText}>文件大小不超过 25MB</Text>
-            </>
-          )}
-        </TouchableOpacity>
+        <View style={styles.mainContent}>
+          <View style={styles.header}>
+            <Text style={styles.title}>音频转录</Text>
+          </View>
+          
+          <TouchableOpacity 
+            style={styles.uploadButton} 
+            onPress={handleAudioUpload}
+          >
+            {audioFile ? (
+              <View style={styles.fileInfo}>
+                <Ionicons name="document-text-outline" size={24} color="#000000" style={styles.fileIcon} />
+                <Text style={styles.fileName} numberOfLines={1}>{audioFile.name}</Text>
+                <Text style={styles.fileSize}>{formatFileSize(audioFile.size)}</Text>
+                <TouchableOpacity 
+                  style={styles.removeButton}
+                  onPress={() => {
+                    setAudioFile(null);
+                    setTranscription('');
+                  }}
+                >
+                  <Ionicons name="close-circle" size={20} color="rgba(0, 0, 0, 0.5)" />
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <>
+                <Text style={styles.uploadButtonText}>选择音频文件</Text>
+                <Text style={styles.uploadSubText}>支持 mp3, wav, m4a 格式</Text>
+                <Text style={styles.uploadSubText}>文件大小不超过 25MB</Text>
+              </>
+            )}
+          </TouchableOpacity>
 
-        <TouchableOpacity 
-          style={[
-            styles.transcribeButton, 
-            (!audioFile || isLoading) && styles.buttonDisabled
-          ]}
-          onPress={handleTranscribe}
-          disabled={!audioFile || isLoading}
-        >
-          <Text style={styles.transcribeButtonText}>
-            {isLoading ? '转录中...' : '开始转录'}
-          </Text>
-        </TouchableOpacity>
+          <TouchableOpacity 
+            style={[
+              styles.transcribeButton, 
+              (!audioFile || isLoading) && styles.buttonDisabled
+            ]}
+            onPress={handleTranscribe}
+            disabled={!audioFile || isLoading}
+          >
+            <Text style={styles.transcribeButtonText}>
+              {isLoading ? '转录中...' : '开始转录'}
+            </Text>
+          </TouchableOpacity>
+        </View>
 
         {transcription ? (
-          <ScrollView style={styles.resultContainer}>
-            <Text style={styles.resultText}>{transcription}</Text>
-          </ScrollView>
+          <View style={styles.resultWrapper}>
+            <ScrollView 
+              style={styles.resultContainer}
+              contentContainerStyle={styles.resultContent}
+            >
+              <Text style={styles.resultText}>{transcription}</Text>
+            </ScrollView>
+          </View>
         ) : null}
       </BlurView>
     </View>
@@ -161,6 +168,9 @@ const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
     padding: 20,
+  },
+  mainContent: {
+    marginBottom: 20,
   },
   header: {
     paddingTop: 60,
@@ -246,12 +256,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
+  resultWrapper: {
+    flex: 1,
+    marginBottom: 20,
+  },
   resultContainer: {
-    marginTop: 20,
+    flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.03)',
     borderRadius: 16,
-    padding: 15,
-    maxHeight: 300,
     borderWidth: 1,
     borderColor: 'rgba(0, 0, 0, 0.1)',
     shadowColor: '#000',
@@ -262,6 +274,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 4,
     elevation: 3,
+  },
+  resultContent: {
+    padding: 15,
   },
   resultText: {
     color: '#000000',
