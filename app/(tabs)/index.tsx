@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert, Clipboard } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { BlurView } from 'expo-blur';
 import * as DocumentPicker from 'expo-document-picker';
@@ -94,6 +94,15 @@ export default function HomePage() {
     }
   };
 
+  const handleCopyText = () => {
+    if (transcription) {
+      Clipboard.setString(transcription);
+      Alert.alert('复制成功', '', [
+        { text: '确定', style: 'default' }
+      ]);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <StatusBar style="dark" />
@@ -153,6 +162,19 @@ export default function HomePage() {
             >
               <Text style={styles.resultText}>{transcription}</Text>
             </ScrollView>
+            <View style={styles.actionButtons}>
+              <TouchableOpacity 
+                style={styles.actionButton}
+                onPress={handleCopyText}
+              >
+                <Ionicons name="copy-outline" size={24} color="rgba(0, 0, 0, 0.5)" />
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={styles.actionButton}
+              >
+                <Ionicons name="download-outline" size={24} color="rgba(0, 0, 0, 0.5)" />
+              </TouchableOpacity>
+            </View>
           </View>
         ) : null}
       </BlurView>
@@ -277,10 +299,32 @@ const styles = StyleSheet.create({
   },
   resultContent: {
     padding: 15,
+    paddingBottom: 50, // 为底部按钮留出空间
   },
   resultText: {
     color: '#000000',
     fontSize: 16,
     lineHeight: 24,
+  },
+  actionButtons: {
+    position: 'absolute',
+    bottom: 15,
+    right: 15,
+    flexDirection: 'row',
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    borderRadius: 12,
+    padding: 4,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  actionButton: {
+    padding: 8,
+    marginHorizontal: 4,
   },
 });
